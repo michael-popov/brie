@@ -105,8 +105,9 @@ int read_script(const char* path)
 {
     FILE* f = fopen(path, "r");
     if (f == nullptr) {
-        fprintf(stderr, "Failed to open file %s\n", path);
-        return 1;
+        // If it is not a file, then it's a command.
+        prefix.push_back(path);        
+        return 0;
     }
 
     enum class InputState { Body, Postfix };
