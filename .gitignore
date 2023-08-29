@@ -1,0 +1,4 @@
+bin/
+bin-dbg/
+src/debug/
+src/release/
