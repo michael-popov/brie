@@ -1,0 +1,47 @@
+all: debug_bld
+
+CXX=g++
+CXXFLAGS += -c -Wall -Wextra -Werror -std=c++17
+INCS := -I$(PROJECT_HOME)/src -I$(PROJECT_HOME)
+
+APP_MAIN := $(PROJECT_HOME)/src/main.cpp
+SOURCES := briebase.yy.cpp source.cpp luna.cpp parser.cpp error.cpp source_test.cpp \
+           structs.cpp
+OBJS := $(subst .cpp,.o,$(SOURCES))
+
+UTEST_MAIN=$(PROJECT_HOME)/utils/utest_main.cpp
+TEST_SOURCES := source_test.cpp utest_source.cpp utest_parser.cpp utest_data.cpp \
+                utest_console.cpp
+TEST_OBJS := $(subst .cpp,.o,$(TEST_SOURCES))
+
+TEST_LIBS := -llua -lgtest -lpthread
+APP_LIBS = -llua -lreadline -lncurses
+STATIC_LIBS := 
+
+export
+
+.PHONY: release_bld
+release_bld:
+	mkdir -p $(PROJECT_HOME)/bin
+	$(MAKE) -C release
+
+.PHONY: debug_bld
+debug_bld:
+	mkdir -p $(PROJECT_HOME)/bin-dbg
+	$(MAKE) -C debug
+
+.PHONY: run
+run:
+	$(MAKE) -C debug run
+
+.PHONY: test
+test:
+	$(MAKE) -C debug test
+
+PHONY: clean
+clean:
+	rm -f $(PROJECT_HOME)/bin-dbg/*
+	rm -f $(PROJECT_HOME)/bin/*
+	$(MAKE) -C debug clean
+	$(MAKE) -C release clean
+
