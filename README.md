@@ -1,0 +1,2 @@
+# brie
+Binary reader utility.
