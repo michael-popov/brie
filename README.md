@@ -80,13 +80,13 @@ If there will be demand to make some things better, I will do it.
 
 # Building
 The utility has following dependencies:
-- Lua engine installed on the machine
-- ncurses library
-- readline library
-- Google test framework
+- Lua engine (**sudo apt-get install -y liblua5.3-dev**)
+- ncurses library (**sudo apt install libncurses5-dev**)
+- readline library (**sudo apt install libreadline-dev**)
+- Google test framework (https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/)
 
 ```
-$ git clone git@github.com:michael-popov/brie.git
+$ git clone  https://github.com/michael-popov/brie.git
 $ cd brie
 $ export PROJECT_HOME=`pwd`
 $ cd src
