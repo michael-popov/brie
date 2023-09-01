@@ -2,7 +2,7 @@ all: debug_bld
 
 CXX=g++
 CXXFLAGS += -c -Wall -Wextra -Werror -std=c++17
-INCS := -I$(PROJECT_HOME)/src -I$(PROJECT_HOME)
+INCS := -I$(PROJECT_HOME)/src -I$(PROJECT_HOME) -I/usr/include/lua5.3
 
 APP_MAIN := $(PROJECT_HOME)/src/main.cpp
 SOURCES := briebase.yy.cpp source.cpp luna.cpp parser.cpp error.cpp source_test.cpp \
@@ -14,8 +14,8 @@ TEST_SOURCES := source_test.cpp utest_source.cpp utest_parser.cpp utest_data.cpp
                 utest_console.cpp
 TEST_OBJS := $(subst .cpp,.o,$(TEST_SOURCES))
 
-TEST_LIBS := -llua -lgtest -lpthread
-APP_LIBS = -llua -lreadline -lncurses
+TEST_LIBS := $(LIBS) -llua5.3 -lgtest -lpthread -lrt
+APP_LIBS = $(LIBS) -llua5.3 -lreadline -lncurses -lrt
 STATIC_LIBS := 
 
 export
