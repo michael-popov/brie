@@ -106,7 +106,7 @@ int read_script(const char* path)
     FILE* f = fopen(path, "r");
     if (f == nullptr) {
         // If it is not a file, then it's a command.
-        prefix.push_back(path);        
+        prefix.push_back(path);
         return 0;
     }
 

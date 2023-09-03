@@ -40,18 +40,21 @@ static const char* BRIE_SIZE = "BRIE_SIZE";
  */ 
 void set_brie_pos_var(lua_State* L)
 {
+    if (!source) return;
     lua_pushinteger(L, source->pos());
     lua_setglobal(L, BRIE_POS);
 }
 
 void set_brie_path_var(lua_State* L)
 {
+    if (!source) return;
     lua_pushstring(L, source->name().c_str());
     lua_setglobal(L, BRIE_PATH);
 }
 
 void set_brie_size_var(lua_State* L)
 {
+    if (!source) return;
     lua_pushinteger(L, source->size());
     lua_setglobal(L, BRIE_SIZE);
 }
@@ -205,8 +208,13 @@ static int func_open_wrapped(lua_State* L)
     }
 
     source = make_source(cfg);
+    if (!source) {
+        luaL_error(L, "%s %s", "Failed to open source ", cfg);
+        return 0;
+    }
     set_brie_pos_var(L);
     set_brie_path_var(L);
+    set_brie_size_var(L);
 
     return 0;
 }
