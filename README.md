@@ -96,9 +96,5 @@ $ make
 $ make test
 ```
 
-# Documentation
-I will add more documentation that describes features and functionalities of the utility.
-I will also add some notes about code and design of the utility.
-
 
 
