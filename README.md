@@ -5,6 +5,8 @@ Brie reads values from binary data and prints them into stdout. It allows integr
 
 Brie can read complex data formats using built-in functions and scripts running on Lua engine. This utility can read data from files and shared memory segments (Posix and SysV). It can process many files on a single run and generate reports based on aggregated data. Brie can generate complex outputs based on Lua scripts and special print functions. It also can run in REPL mode to provide interacive access to binary data.
 
+There is a Wiki with documentation [here](https://github.com/michael-popov/brie/wiki).
+
 # Examples
 
 ### 1. Obligatory “hello, world!” example
