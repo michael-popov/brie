@@ -183,12 +183,14 @@ int process_script(brie::Luna& luna, const char* path, bool first, bool last)
         if (ret != 0) return ret;
     }
 
-    if (scriptToRepl) return 0; // execute only prefix
+    if (scriptToRepl && !prefix.empty()) return 0; // execute only prefix. if there is no prefix, then execute body
 
     if (!prefix.empty()) lineNum = 2 + prefix.size(); // 1 to start with 1 and +1 to include %%
 
     ret = process_lines(luna, body, lineNum);
     if (ret != 0) return ret;
+
+    if (scriptToRepl) return 0; // just executed body, don't execute prefix
 
     if (last) {
         return finish();
