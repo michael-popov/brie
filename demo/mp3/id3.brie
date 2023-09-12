@@ -1,0 +1,121 @@
+-- Script to process ID3 tags in MP3 files.
+
+-- START PREFIX
+-- The code before first %% is executed only once.
+-- It allows declaration of functions, structs and shared variables
+-- to happen in the beginning of processing of multiple files.
+
+-- Calculate the length of a field. A bit weird but that's the way ID3 guys
+-- decided to use.
+function calc_len(t)
+    return t[1]*2097152 + t[2]*16384 + t[3]*128 + t[4]
+end
+
+-- Header of ID3 tags in MP3 files
+decl('header', 'str#3:name u8*2:ver u8:flags u8*4:size')
+
+-- Partial definition of an ID3 tag. The second part
+-- of tag has a variable length. It is handled by the script logic.
+decl('tag', 'str#4:name u8*4:size u8*2:flags')
+
+-- Declare a container to keep information about album
+-- (assuming the set of processed files contain songs belonging
+-- to the same album). 
+album = {}
+
+index = 0
+
+-- END OF PREFIX
+%%
+-- START OF BODY
+-- The code till next %% will be executed for each processed file.
+
+h = read('header')
+
+-- Just in case if it's not a right file, stop processing the current
+-- file by calling error() function
+if h.name ~= 'ID3' then
+    error('Invalid file format')
+end
+
+-- Declare container to keep info about a song in the MP3 file
+song = {}
+s = ''
+
+while true do
+    t = read('tag')
+
+    -- Stop processing tags when the script encounters the first tag,
+    -- which name does not start with a letter 'T'
+    if t.name:sub(1, 1) ~= 'T' then
+        break
+    end
+
+    -- Preservie the position right after the fixed tag structure
+    p = BRIE_POS
+
+    -- Calculate the length of the value
+    len = calc_len(t.size)
+    maxStrLen = len - 1
+
+    -- Read encoding flag: ASCII or UTF-16
+    -- Define reading format based on the encoding flag
+    encoding = read('u8')
+    if encoding == 1 then
+        -- Paranoid check
+        if maxStrLen % 2 == 1 then
+            break
+        end
+        fmt = string.format('wstr#%d', maxStrLen / 2)
+    else
+        fmt = string.format('str#%d', maxStrLen)
+    end
+
+    -- Read the tag's value
+    s = read(fmt)
+
+    if t.name == 'TIT2' then
+        song.title = s
+    elseif t.name == 'TALB' then
+        song.album = s
+    elseif t.name == 'TCON' then
+        song.genre = s
+    elseif t.name == 'TYER' then
+        song.year = s
+    elseif t.name == 'TRCK' then
+        song.track = s
+    elseif t.name == 'TPE1' then
+        song.artist = s
+    end
+
+    -- Set reader's position to read next tag
+    setpos(p + len)
+end
+
+index = index + 1
+
+-- Add a song's description to the album's container
+album[index] = song
+
+-- END OF BODY
+%%
+-- START OF POSTFIX
+-- The following code is executed only once, after
+-- files are processed.
+
+if index < 1 then
+    error('No songs')
+end
+
+s = album[1]
+println("Artist: %s", s.artist)
+println("Album: %s", s.album)
+println("Genre: %s", s.genre)
+println("Year: %s", s.year)
+print("==============================")
+
+for i = 1, index do
+    s = album[i]
+    println('%s\t%s', s.track, s.title)
+end
+

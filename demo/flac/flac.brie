@@ -1,0 +1,27 @@
+-- Script processes FLAC files, extracts tag information and generates
+-- intput for sqlite utility to build a database with this information
+
+-- Prepare file 'prefix.out' by compiling script 'prefix.lua'
+-- Example: luac -o prefix.out prefix.lua
+
+-- This part is executed only once.
+-- It allows to declare functions, structs and global variables.
+
+dofile('prefix.out')
+
+%% ==================================================================================
+
+-- Prepare file 'body.out' by compiling script 'body.lua'
+-- Example: luac -o body.out body.lua
+-- This allows sciping parsing and compilation of the code for each processed file.
+-- Might improve performance when processing a really large number of files.
+
+dofile('body.out')
+
+%% ==================================================================================
+
+-- Prepare file 'postfix.out' by compiling script 'postfix.lua'
+-- Example: luac -o postfix.out postfix.lua
+
+dofile('postfix.out')
+

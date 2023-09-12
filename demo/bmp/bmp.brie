@@ -1,0 +1,50 @@
+#!/home/mpopov/brie
+
+-- Code before first %% line is executed only once when multiple files are processed.
+-- It means struct declarations happened only once. As it is supposed to be.
+
+-- Declare struct "header" that describes a BMP header
+decl('header', 'str#2:signature u32:file_size void#4 void#4')
+
+-- Declare struct "info" that describes a BMP info part
+info_part1 = 'u32:size u32:width u32:height u16:planes u16:bits_per_pixel u32:compression'
+info_part2 = 'u32:image_size u32:x_pixels u32:y_pixels u32:colors_used u32:important_colors'
+info_descr = info_part1..' '..info_part2
+
+decl('info', info_descr)
+
+-- Declare a variable that is shared during processing of multiple files
+count = 0
+
+-- Print a top line of a CSV output
+println('Name,Size,Width,Height,BitsPerPixel')
+
+-- END OF PREFIX
+%%
+-- START OF BODY
+-- This part of script is executed for each file during processing
+
+-- Read a header struct. We don't actually use this data here
+-- but it sets position to read the following info struct
+header = read('header')
+
+-- Read info struct
+info = read('info')
+
+-- Print a line of CSV output for each file
+-- Variable BRIE_PATH contains path of a file being processed at the moment
+println('%s,%d,%d,%d,%d', BRIE_PATH, info.size, info.width, info.height, info.bits_per_pixel)
+
+-- Increment variable, which is executed for each file.
+-- It allows to accumulate data
+count = count + 1
+
+-- END OF BODY
+%%
+-- START OF PREFIX
+-- The following code is executed is executed only once after processing of
+-- all files is completed.
+
+println("=========================================")
+println("%d files", count)
+
