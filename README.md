@@ -95,6 +95,11 @@ $ cd src
 $ make
 $ make test
 ```
+If you don't care about testing and don't want to bother with installing Google test framework, you can build the utility without tests.
+```
+make -f Makefile.Noutest
+```
+
 
 
 
