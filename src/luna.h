@@ -38,6 +38,7 @@ public:
     void init();
     int exec(const char* line);
     bool is_error() const;
+    const std::string get_error();
 
 private:
     lua_State* m_state;

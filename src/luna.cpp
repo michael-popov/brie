@@ -30,6 +30,7 @@ namespace brie {
 
 static SourcePtr source;
 static bool isError = false;
+static std::string lastError;
 
 // Names of global variables
 static const char* BRIE_POS = "BRIE_POS";
@@ -363,7 +364,7 @@ static int func_find(lua_State* L)
 static int func_error(lua_State* L)
 {
     const char* msg = luaL_checkstring(L, 1);
-    if (msg != nullptr) fprintf(stderr, "%s\n", msg);
+    lastError = msg;
     isError = true;
     return 0;
 }
@@ -479,6 +480,13 @@ int Luna::print_error()
 bool Luna::is_error() const
 {
     return isError;
+}
+
+const std::string Luna::get_error()
+{
+    std::string tmp = lastError;
+    lastError = "";
+    return tmp;
 }
 
 

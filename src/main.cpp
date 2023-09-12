@@ -155,8 +155,13 @@ int process_lines(brie::Luna& luna, const Lines& lines, size_t lineNum)
         luna.exec(str.c_str());
 
         if (luna.is_error()) {
-            fprintf(stderr, "Line #%lu\n", lineNum);
-            return 1;
+            const std::string err = luna.get_error();
+            if (err.empty()) {
+                fprintf(stderr, "Line #%lu\n", lineNum);
+            } else {
+                fprintf(stderr, "Line #%lu. Error: %s\n", lineNum, err.c_str());
+            }
+            return &lines == &body ? 0 : 1;
         }
 
         lineNum++;
